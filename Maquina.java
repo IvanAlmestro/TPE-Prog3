@@ -1,12 +1,12 @@
 public class Maquina {
     private String nombre;
     private int cantPiezasProduce;
-    private boolean enFuncionamiento;
 
-    public Maquina(String nombre,int cantPiezasProduce, boolean enFuncionamiento) {
+
+    public Maquina(String nombre,int cantPiezasProduce) {
         this.nombre = nombre;
         this.cantPiezasProduce = cantPiezasProduce;
-        this.enFuncionamiento = enFuncionamiento;
+
     }
 
     public String getNombre() {
@@ -21,12 +21,4 @@ public class Maquina {
         return cantPiezasProduce;
     }
 
-
-    public boolean isEnFuncionamiento() {
-        return enFuncionamiento;
-    }
-
-    public void setEnFuncionamiento(boolean enFuncionamiento) {
-        this.enFuncionamiento = enFuncionamiento;
-    }
 }
