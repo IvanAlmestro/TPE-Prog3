@@ -5,11 +5,22 @@ import java.util.*;
 
 public class FabricaGreedy {
     private int piezasAProducir;
+    private int cantEstados ;
 
     public FabricaGreedy(int piezasAProducir){
         this.piezasAProducir = piezasAProducir;
+        cantEstados=0;
     }
-    public static List<Maquina> resolverGreedy(List<Maquina> maquinas, int piezasAProducir) {
+
+    /*
+     * Estrategia Greedy:
+      - Los candidatos son las máquinas disponibles, ordenadas por cantidad de piezas que producen (mayor a menor).
+      - En cada paso, se selecciona la máquina que produce más piezas y que no exceda la producción requerida.
+      - Se repite mientras haya candidatos y no se haya alcanzado el total requerido.
+      - La estrategia greedy en este caso evalua que con las maquinas disponibles se pueda llegar a la produccion de piezas determinada.
+      - Estados: cantidad de candidatos considerados.
+     */
+    public List<Maquina> resolverGreedy(List<Maquina> maquinas, int piezasAProducir) {
         List<Maquina> solucion = new LinkedList<>();
         int sumaActual = 0;
 
@@ -20,7 +31,7 @@ public class FabricaGreedy {
 
             Maquina candidata = seleccionar(maquinas);
             maquinas.remove(candidata); // sacar del conjunto de candidatos
-
+            this.cantEstados++;
             if (esFactible(sumaActual, candidata, piezasAProducir)) {
                 solucion.add(candidata);
                 sumaActual += candidata.getCantPiezasProduce();
@@ -28,7 +39,7 @@ public class FabricaGreedy {
 
 
         }
-        if(esSolucion(maquinas,sumaActual,piezasAProducir))
+        if(esSolucion(sumaActual,piezasAProducir))
             return solucion;
         else{
             return null;
@@ -36,55 +47,32 @@ public class FabricaGreedy {
     }
 
     // Chequea si la suma actual alcanza el objetivo
-    private static boolean esSolucion(List<Maquina>maquinas,int sumaActual, int piezasAProducir) {
+    private boolean esSolucion(int sumaActual, int piezasAProducir) {
 
         return sumaActual == piezasAProducir;
     }
 
     // Chequea si agregar la máquina no se pasa del objetivo
-    private static boolean esFactible(int sumaActual, Maquina candidata, int piezasAProducir) {
+    private boolean esFactible(int sumaActual, Maquina candidata, int piezasAProducir) {
         return sumaActual + candidata.getCantPiezasProduce() <= piezasAProducir;
     }
 
     // Selecciona la máquina que produce más piezas
-    private static Maquina seleccionar(List<Maquina> maquinas) {
+    private Maquina seleccionar(List<Maquina> maquinas) {
         return maquinas.get(0); // ya está ordenada de mayor a menor
     }
 
-    public static void main(String[] args) throws IOException {
-        List<Maquina> maquinas = new LinkedList<>();
-
-        BufferedReader br = new BufferedReader(new FileReader("datos.txt"));
-
-        // Leer cantidad de piezas requeridas
-        int piezasRequeridas = Integer.parseInt(br.readLine().trim());
-
-        // Leer máquinas desde el archivo
-        System.out.println("Maquinas disponibles:");
-        String linea;
-        while ((linea = br.readLine()) != null) {
-            String[] partes = linea.split(",");
-            String nombre = partes[0].trim();
-            int piezas = Integer.parseInt(partes[1].trim());
-            maquinas.add(new Maquina(nombre, piezas));
-            System.out.println(nombre + " -> " + piezas);
-        }
-        br.close();
-
-        // Llamada al algoritmo Greedy modularizado
-        List<Maquina> solucion = resolverGreedy(maquinas, piezasRequeridas);
-        int totalEstados = solucion.size(); // cada elección se considera un "estado"
-
-        // Mostrar resultado
-        System.out.println("\nCantidad de maquinas en funcionamiento: " + solucion.size());
-        System.out.println("Mejor secuencia de máquinas para " + piezasRequeridas + " piezas:");
-        if (solucion.isEmpty()) {
-            System.out.println("No se encontró ninguna combinación.");
-        } else {
-            for (Maquina maq : solucion) {
-                System.out.println(maq.getNombre() + " (" + maq.getCantPiezasProduce() + ")");
-            }
-        }
-        System.out.println("Estados generados: " + totalEstados);
+    public int getCantEstados() {
+        return cantEstados;
     }
+
+    public int getPiezasAProducir() {
+        return piezasAProducir;
+    }
+
+    public void setPiezasAProducir(int piezasAProducir) {
+        this.piezasAProducir = piezasAProducir;
+    }
+
+
 }

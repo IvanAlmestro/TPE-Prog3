@@ -28,12 +28,12 @@ public class FabricaBacktracking {
         return mejorConfiguracion;
     }
      /* Estrategia de Backtracking:
-        El árbol de exploración se genera combinando las máquinas posibles.
+        El árbol de exploración se genera combinando las máquinas posibles, permitiendo repetirlas.
         Cada nodo son las máquinas usadas y las piezas que producen.
         Un estado solución es cuando a traves de las maquinas producimos exactactamente la cantidad de piezas requeridas.
         Se aplica una poda si:
-        1) Ya se encontró una solución mejor o igual.
-        2) La suma actual de piezas es mayor a las piezas  a producir.
+        1) Si ya hay una mejor solución con igual o menor cantidad de máquinas, se evita continuar.
+        2) Si la suma actual de piezas es mayor a las piezas  a producir.
      */
     private void backMaquinasRec(int piezasProducidas) {
         cantEstados++;
@@ -67,37 +67,4 @@ public class FabricaBacktracking {
         return cantEstados;
     }
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("datos.txt"));
-        System.out.println("Maquinas disponibles:");
-
-        int piezasRequeridas = Integer.parseInt(br.readLine().trim());
-        FabricaBacktracking fabrica = new FabricaBacktracking("Fabrica", piezasRequeridas);
-
-        String linea;
-        while ((linea = br.readLine()) != null) {
-            String[] partes = linea.split(",");
-            String nombre = partes[0].trim();
-            int piezas = Integer.parseInt(partes[1].trim());
-            fabrica.addMaquina(new Maquina(nombre, piezas));
-            System.out.println(nombre + " -> " + piezas);
-        }
-        br.close();
-
-        // Ejecuta el back
-        List<Maquina> solucion = fabrica.backMaquinas();
-
-        // Muestra resultado
-        System.out.println("\nCantidad de maquinas en funcionamiento: " + solucion.size());
-        System.out.println("Mejor secuencia de máquinas para " + piezasRequeridas + " piezas:");
-        if (solucion.isEmpty()) {
-            System.out.println("No se encontró ninguna combinación.");
-        } else {
-            for (Maquina maq : solucion) {
-                System.out.println(maq.getNombre() + " (" + maq.getCantPiezasProduce() + ")");
-            }
-        }
-
-        System.out.println("Total de llamados recursivos: " + fabrica.getCantEstados());
-    }
 }
